@@ -1,101 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sai’s 10 Questions</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sai’s 10 Questions</title>
 
-    <!-- React + ReactDOM -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <style>
-      body {
-        background: #0f1724;
-        color: white;
-        font-family: sans-serif;
-        padding: 20px;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="root"></div>
-
-    <!-- Your entire React code goes here -->
-    <script type="text/babel">
-
-      const { useState, useEffect, useRef } = React;
-
-      const questions = [
-        { text: "Is your name Gagan Arora?", correct: ["yes"] },
-        { text: "Do you like it when someone appreciates you for who you are?", correct: ["yes"] },
-        { text: "Do you think you deserve someone who genuinely values you?", correct: ["yes"] },
-        { text: "Is loyalty something you truly care about?", correct: ["yes"] },
-        { text: "Do you like Sai Agarwal?", correct: ["yes", "hell yes"], options: ["yes", "hell yes"] },
-        { text: "Do you enjoy talking to Sai even when it’s about random silly things?", correct: ["yes"] },
-        { text: "Do you think meeting each other was destiny?", correct: ["yes"] },
-        { text: "Do you want to meet me soon?", correct: ["yes"] },
-        { text: "Do you feel like telling Sai “I wolf you” again right now?", correct: ["yes"] }
-      ];
-
-      function App() {
-        const [index, setIndex] = useState(0);
-        const [message, setMessage] = useState("");
-
-        function handleAnswer(ans) {
-          const allowed = questions[index].correct.map(x => x.toLowerCase());
-          if (allowed.includes(ans.toLowerCase())) {
-            setMessage("");
-            setIndex(prev => prev + 1);
-          } else {
-            setMessage("That doesn't look like the answer I'm expecting. Try again ❤️");
-          }
-        }
-
-        if (index >= questions.length) {
-          return <h1>You’ve completed all questions ❤️</h1>;
-        }
-
-        const q = questions[index];
-
-        return (
-          <div>
-            <h2>Sai’s 10 Questions</h2>
-            <p>{q.text}</p>
-
-            {q.options ? (
-              q.options.map(opt => (
-                <button key={opt} onClick={() => handleAnswer(opt)}>
-                  {opt.toUpperCase()}
-                </button>
-              ))
-            ) : (
-              <>
-                <input
-                  type="text"
-                  placeholder="your answer..."
-                  id="answerBox"
-                  onKeyDown={e => {
-                    if (e.key === "Enter") handleAnswer(e.target.value);
-                  }}
-                />
-              </>
-            )}
-
-            {message && <p style={{ color: "pink" }}>{message}</p>}
-
-            <p>Progress: {index + 1}/{questions.length}</p>
-          </div>
-        );
-      }
-
-      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
-    </script>
-  </body>
-</html>
+  <!-- Styles -->
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#ff6b81;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03)}
+    html,body,#root{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background: linear-gradient(180deg,#071025 0%, #071a2d 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+    }
+    .container{
+      max-width:720px;
+      margin:48px auto;
+      padding:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    h1{margin:0 0 12px 0;font-size:20px}
+    p.lead{margin:4px 0 18px 0;color:var(--muted)}
+    .card{
+      background:var(--card);
+      padding:20px;
 
