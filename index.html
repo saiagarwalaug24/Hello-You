@@ -12,28 +12,50 @@
       --muted:#9aa4b2;
       --glass:rgba(255,255,255,0.03);
     }
-    html, body {
-      height: 100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background: linear-gradient(180deg,#071025 0%, #071a2d 100%); color:#e6eef6;
-      display:flex; justify-content:center; align-items:center;
-    }
-    .container {
-      max-width:720px; width:90%; padding:28px; border-radius:12px;
-      text-align:center; background:var(--card);
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
-    }
-    .final-message {
-      font-size:18px; line-height:1.5;
-    }
-    .btn {padding:10px 16px; border-radius:8px; border:0; cursor:pointer; font-weight:600; margin:6px; background:var(--glass); color:inherit;}
-    .btn.primary {background: linear-gradient(90deg,#ff869d,#ff6b81); color:white;}
+    html, body {height: 100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background: linear-gradient(180deg,#071025 0%, #071a2d 100%); color:#e6eef6; -webkit-font-smoothing:antialiased;}
+    .container {max-width:720px; margin:48px auto; padding:28px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; box-shadow: 0 8px 30px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);}
+    h1{margin:0 0 12px 0;font-size:20px}
+    p.lead{margin:4px 0 18px 0;color:var(--muted)}
+    .card{background:var(--card); padding:20px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);}
+    .question{font-size:18px; margin-bottom:14px;}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+    button.btn{padding:10px 16px; border-radius:8px; border:0; cursor:pointer; font-weight:600; background:var(--glass); color:inherit; transition:transform .12s ease, box-shadow .12s ease; box-shadow: 0 6px 18px rgba(2,6,23,0.6);}
+    button.btn:hover{transform:translateY(-3px);}
+    button.primary{background: linear-gradient(90deg,#ff869d,#ff6b81); color:white; box-shadow: 0 8px 30px rgba(255,107,129,0.12);}
+    .muted{color:var(--muted);font-size:13px;margin-top:10px}
+    .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;margin:14px 0}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#6ee7b7,#60a5fa);width:0%}
+    .notice{margin-top:12px;color:#ffd7d7;background:rgba(255,215,215,0.06);padding:10px;border-radius:8px;border:1px solid rgba(255,215,215,0.06)}
+    .final{margin-top:20px;padding:18px;border-radius:10px;background:linear-gradient(90deg, rgba(17,24,39,0.7), rgba(11,21,35,0.6));text-align:center}
+    .final h2{margin:0 0 8px 0}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
   </style>
 </head>
 <body>
-  <div class="container" id="container">
-    <div id="question-container"></div>
-    <div id="buttons" class="btn-row"></div>
-    <div id="message" style="margin-top:12px;color:#ffd7d7; display:none;"></div>
+  <div class="container">
+    <h1>Sai's 10 Questions</h1>
+    <p class="lead">Answer the questions truthfully. Correct answers let you go to the next one.</p>
+
+    <div class="card" id="card">
+      <div class="progress"><i id="progress-bar"></i></div>
+      <div id="question-container"></div>
+      <div id="buttons" class="btn-row"></div>
+      <div id="message" class="notice" style="display:none;"></div>
+      <div id="progress-text" class="muted"></div>
+    </div>
+
+    <div style="height:500px"></div>
+
+    <div id="final-message" style="position:fixed; top:12px; left:50%; transform:translateX(-50%); width:min(720px,92%); pointer-events:none; display:none;">
+      <div style="pointer-events:auto; background:rgba(255,255,255,0.04); padding:14px 18px; border-radius:10px; text-align:center; border:1px solid rgba(255,255,255,0.04)">
+        <strong style="font-size:16px;">So, being a tech girlie i want to tell you that I am glad to have you as a part of my life.</strong>
+      </div>
+    </div>
+
+    <footer>
+      <div>Tip: You can manually scroll to the top to see the message appear.</div>
+    </footer>
   </div>
 
   <script>
@@ -51,28 +73,33 @@
     ];
 
     let index = 0;
+    let history = [];
 
-    const container = document.getElementById('container');
     const questionContainer = document.getElementById('question-container');
     const buttonsDiv = document.getElementById('buttons');
     const messageDiv = document.getElementById('message');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const finalMessageDiv = document.getElementById('final-message');
 
     function renderQuestion() {
       if (index < questions.length) {
         const q = questions[index];
-        questionContainer.textContent = q.text;
+        questionContainer.innerHTML = `<div class="question">${index+1}. ${q.text}</div>`;
         buttonsDiv.innerHTML = '';
         const options = q.options || ["yes","no"];
         options.forEach(opt => {
           const btn = document.createElement('button');
-          btn.className = 'btn ' + ((opt==="yes"||opt==="hell yes") ? 'primary':'');
+          btn.className = 'btn ' + ((opt === "yes" || opt === "hell yes") ? 'primary' : '');
           btn.textContent = opt.charAt(0).toUpperCase() + opt.slice(1);
           btn.onclick = () => handleAnswer(opt);
           buttonsDiv.appendChild(btn);
         });
         messageDiv.style.display = 'none';
+        progressBar.style.width = Math.round((index / questions.length) * 100) + '%';
+        progressText.textContent = `Progress: ${index} / ${questions.length}`;
       } else {
-        showFinalMessage();
+        showFinal();
       }
     }
 
@@ -80,6 +107,7 @@
       const q = questions[index];
       const normalized = answer.trim().toLowerCase();
       if (q.correct.includes(normalized)) {
+        history.push({q: q.text, a: answer});
         index++;
         renderQuestion();
       } else {
@@ -88,13 +116,41 @@
       }
     }
 
-    function showFinalMessage() {
-      container.innerHTML = `<div class="final-message">
-        So, being a tech girlie I want to tell you that I am glad to have you as a part of my life.
-      </div>`;
+    function showFinal() {
+      questionContainer.innerHTML = '';
+      buttonsDiv.innerHTML = '';
+      messageDiv.style.display = 'none';
+      progressBar.style.width = '100%';
+      progressText.textContent = `Progress: ${questions.length} / ${questions.length}`;
+      
+      const card = document.getElementById('card');
+      card.innerHTML = `
+        <div class="final">
+          <h2>You completed the questions 🎉</h2>
+          <p class="small">Thank you for answering. When you scroll to the top, a message will appear.</p>
+          <div style="margin-top:12px">
+            <button class="btn primary" onclick="window.scrollTo({top:0, behavior:'smooth'})">REVEAL</button>
+          </div>
+          <div style="margin-top:14px; text-align:left">
+            <strong>Your answers:</strong>
+            <ul style="margin-top:8px; padding-left:18px">
+              ${history.map((h,i)=>`<li><strong>Q${i+1}:</strong> ${h.q} — <em>${h.a}</em></li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
     }
 
-    renderQuestion();
+    // Show final message when user scrolls to top
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset <= 2) {
+        finalMessageDiv.style.display = 'block';
+      } else {
+        finalMessageDiv.style.display = 'none';
+      }
+    });
+
+
   </script>
 </body>
 </html>
