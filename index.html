@@ -1,128 +1,156 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sai’s 10 Questions</title>
-
   <style>
-    body {
-      background: #0f1724;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      line-height: 1.6;
+    :root {
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff6b81;
+      --muted:#9aa4b2;
+      --glass:rgba(255,255,255,0.03);
     }
-    .card {
-      background: #0b1220;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 600px;
-      margin: auto;
-      border: 1px solid #1f2937;
-    }
-    button {
-      background: #ff6b81;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      margin: 5px;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .message {
-      margin-top: 15px;
-      color: #ff6b81;
-      font-weight: bold;
-    }
-    h2 { 
-      color: #ff6b81;
-    }
+    html, body {height: 100%; margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background: linear-gradient(180deg,#071025 0%, #071a2d 100%); color:#e6eef6; -webkit-font-smoothing:antialiased;}
+    .container {max-width:720px; margin:48px auto; padding:28px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; box-shadow: 0 8px 30px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03);}
+    h1{margin:0 0 12px 0;font-size:20px}
+    p.lead{margin:4px 0 18px 0;color:var(--muted)}
+    .card{background:var(--card); padding:20px; border-radius:10px; border:1px solid rgba(255,255,255,0.02);}
+    .question{font-size:18px; margin-bottom:14px;}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap}
+    button.btn{padding:10px 16px; border-radius:8px; border:0; cursor:pointer; font-weight:600; background:var(--glass); color:inherit; transition:transform .12s ease, box-shadow .12s ease; box-shadow: 0 6px 18px rgba(2,6,23,0.6);}
+    button.btn:hover{transform:translateY(-3px);}
+    button.primary{background: linear-gradient(90deg,#ff869d,#ff6b81); color:white; box-shadow: 0 8px 30px rgba(255,107,129,0.12);}
+    .muted{color:var(--muted);font-size:13px;margin-top:10px}
+    .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;margin:14px 0}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#6ee7b7,#60a5fa);width:0%}
+    .notice{margin-top:12px;color:#ffd7d7;background:rgba(255,215,215,0.06);padding:10px;border-radius:8px;border:1px solid rgba(255,215,215,0.06)}
+    .final{margin-top:20px;padding:18px;border-radius:10px;background:linear-gradient(90deg, rgba(17,24,39,0.7), rgba(11,21,35,0.6));text-align:center}
+    .final h2{margin:0 0 8px 0}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
   </style>
-
-  <!-- React & Babel CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-
 <body>
+  <div class="container">
+    <h1>Sai's 10 Questions</h1>
+    <p class="lead">Answer the questions truthfully. Correct answers let you go to the next one.</p>
 
-  <div id="root"></div>
+    <div class="card" id="card">
+      <div class="progress"><i id="progress-bar"></i></div>
+      <div id="question-container"></div>
+      <div id="buttons" class="btn-row"></div>
+      <div id="message" class="notice" style="display:none;"></div>
+      <div id="progress-text" class="muted"></div>
+    </div>
 
-  <script type="text/babel">
+    <div style="height:500px"></div>
 
+    <div id="final-message" style="position:fixed; top:12px; left:50%; transform:translateX(-50%); width:min(720px,92%); pointer-events:none; display:none;">
+      <div style="pointer-events:auto; background:rgba(255,255,255,0.04); padding:14px 18px; border-radius:10px; text-align:center; border:1px solid rgba(255,255,255,0.04)">
+        <strong style="font-size:16px;">So, being a tech girlie i want to tell you that I am glad to have you as a part of my life.</strong>
+      </div>
+    </div>
+
+    <footer>
+      <div>Tip: You can manually scroll to the top to see the message appear.</div>
+    </footer>
+  </div>
+
+  <script>
     const questions = [
       { text: "Is your name Gagan Arora?", correct: ["yes"] },
       { text: "Do you like it when someone appreciates you for who you are?", correct: ["yes"] },
       { text: "Do you think you deserve someone who genuinely values you?", correct: ["yes"] },
       { text: "Is loyalty something you truly care about?", correct: ["yes"] },
-      { text: "Do you like Sai Agarwal?", options: ["yes", "hell yes"], correct: ["yes", "hell yes"] },
-      { text: "Do you enjoy talking to Sai even when it's about random silly things?", correct: ["yes"] },
+      { text: "Do you like Sai Agarwal?", correct: ["yes","hell yes"], options: ["yes","hell yes","no"] },
+      { text: "Do you enjoy talking to Sai even when it’s about random silly things?", correct: ["yes"] },
       { text: "Do you think meeting each other was destiny?", correct: ["yes"] },
-      { text: "Do you know that you are special for me?", correct: ["yes"] },
+      { text: "Do u know that you are special for me?", correct: ["yes"] },
       { text: "Do you want to meet me soon?", correct: ["yes"] },
-      { text: "Do you feel like telling Sai 'I wolf you' again right now?", correct: ["yes"] }
+      { text: "Do you feel like telling Sai “I wolf you” again right now?", correct: ["yes"] },
     ];
 
-    function App() {
-      const [index, setIndex] = React.useState(0);
-      const [message, setMessage] = React.useState("");
-      const [completed, setCompleted] = React.useState(false);
+    let index = 0;
+    let history = [];
 
-      const handleAnswer = (opt) => {
-        const normalized = opt.trim().toLowerCase();
-        if (questions[index].correct.includes(normalized)) {
-          setMessage("");
-          if (index + 1 >= questions.length) {
-            setCompleted(true);
-          } else {
-            setIndex(index + 1);
-          }
-        } else {
-          setMessage("That's not the answer I'm expecting ❤️ Try again!");
-        }
-      };
+    const questionContainer = document.getElementById('question-container');
+    const buttonsDiv = document.getElementById('buttons');
+    const messageDiv = document.getElementById('message');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const finalMessageDiv = document.getElementById('final-message');
 
-      if (completed) {
-        return (
-          <div className="card">
-            <h2>You finished all 10 questions 🎉</h2>
-            <p>Sai is probably smiling right now 😊</p>
-          </div>
-        );
+    function renderQuestion() {
+      if (index < questions.length) {
+        const q = questions[index];
+        questionContainer.innerHTML = `<div class="question">${index+1}. ${q.text}</div>`;
+        buttonsDiv.innerHTML = '';
+        const options = q.options || ["yes","no"];
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'btn ' + ((opt === "yes" || opt === "hell yes") ? 'primary' : '');
+          btn.textContent = opt.charAt(0).toUpperCase() + opt.slice(1);
+          btn.onclick = () => handleAnswer(opt);
+          buttonsDiv.appendChild(btn);
+        });
+        messageDiv.style.display = 'none';
+        progressBar.style.width = Math.round((index / questions.length) * 100) + '%';
+        progressText.textContent = `Progress: ${index} / ${questions.length}`;
+      } else {
+        showFinal();
       }
-
-      const current = questions[index];
-      const options = current.options || ["yes", "no"];
-
-      return (
-        <div className="card">
-          <h2>Sai’s 10 Questions</h2>
-
-          <p>{current.text}</p>
-
-          {options.map(opt => (
-            <button key={opt} onClick={() => handleAnswer(opt)}>
-              {opt.charAt(0).toUpperCase() + opt.slice(1)}
-            </button>
-          ))}
-
-          {message && <div className="message">{message}</div>}
-
-          <p style={{ marginTop: "20px", opacity: 0.7 }}>
-            Progress: {index + 1} / {questions.length}
-          </p>
-        </div>
-      );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  </script>
+    function handleAnswer(answer) {
+      const q = questions[index];
+      const normalized = answer.trim().toLowerCase();
+      if (q.correct.includes(normalized)) {
+        history.push({q: q.text, a: answer});
+        index++;
+        renderQuestion();
+      } else {
+        messageDiv.style.display = 'block';
+        messageDiv.textContent = "That doesn't look like the answer I'm expecting. Try again ❤️";
+      }
+    }
 
+    function showFinal() {
+      questionContainer.innerHTML = '';
+      buttonsDiv.innerHTML = '';
+      messageDiv.style.display = 'none';
+      progressBar.style.width = '100%';
+      progressText.textContent = `Progress: ${questions.length} / ${questions.length}`;
+      
+      const card = document.getElementById('card');
+      card.innerHTML = `
+        <div class="final">
+          <h2>You completed the questions 🎉</h2>
+          <p class="small">Thank you for answering. When you scroll to the top, a message will appear.</p>
+          <div style="margin-top:12px">
+            <button class="btn primary" onclick="window.scrollTo({top:0, behavior:'smooth'})">Scroll to Top</button>
+          </div>
+          <div style="margin-top:14px; text-align:left">
+            <strong>Your answers:</strong>
+            <ul style="margin-top:8px; padding-left:18px">
+              ${history.map((h,i)=>`<li><strong>Q${i+1}:</strong> ${h.q} — <em>${h.a}</em></li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    // Show final message when user scrolls to top
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset <= 2) {
+        finalMessageDiv.style.display = 'block';
+      } else {
+        finalMessageDiv.style.display = 'none';
+      }
+    });
+
+    renderQuestion();
+  </script>
 </body>
 </html>
