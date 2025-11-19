@@ -1,33 +1,128 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sai’s 10 Questions</title>
 
-  <!-- Styles -->
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#ff6b81;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03)}
-    html,body,#root{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background: linear-gradient(180deg,#071025 0%, #071a2d 100%);
-      color:#e6eef6;
-      -webkit-font-smoothing:antialiased;
+    body {
+      background: #0f1724;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      line-height: 1.6;
     }
-    .container{
-      max-width:720px;
-      margin:48px auto;
-      padding:28px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-      border:1px solid rgba(255,255,255,0.03);
+    .card {
+      background: #0b1220;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: auto;
+      border: 1px solid #1f2937;
     }
-    h1{margin:0 0 12px 0;font-size:20px}
-    p.lead{margin:4px 0 18px 0;color:var(--muted)}
-    .card{
-      background:var(--card);
-      padding:20px;
+    button {
+      background: #ff6b81;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .message {
+      margin-top: 15px;
+      color: #ff6b81;
+      font-weight: bold;
+    }
+    h2 { 
+      color: #ff6b81;
+    }
+  </style>
 
+  <!-- React & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    const questions = [
+      { text: "Is your name Gagan Arora?", correct: ["yes"] },
+      { text: "Do you like it when someone appreciates you for who you are?", correct: ["yes"] },
+      { text: "Do you think you deserve someone who genuinely values you?", correct: ["yes"] },
+      { text: "Is loyalty something you truly care about?", correct: ["yes"] },
+      { text: "Do you like Sai Agarwal?", options: ["yes", "hell yes"], correct: ["yes", "hell yes"] },
+      { text: "Do you enjoy talking to Sai even when it's about random silly things?", correct: ["yes"] },
+      { text: "Do you think meeting each other was destiny?", correct: ["yes"] },
+      { text: "Do you know that you are special for me?", correct: ["yes"] },
+      { text: "Do you want to meet me soon?", correct: ["yes"] },
+      { text: "Do you feel like telling Sai 'I wolf you' again right now?", correct: ["yes"] }
+    ];
+
+    function App() {
+      const [index, setIndex] = React.useState(0);
+      const [message, setMessage] = React.useState("");
+      const [completed, setCompleted] = React.useState(false);
+
+      const handleAnswer = (opt) => {
+        const normalized = opt.trim().toLowerCase();
+        if (questions[index].correct.includes(normalized)) {
+          setMessage("");
+          if (index + 1 >= questions.length) {
+            setCompleted(true);
+          } else {
+            setIndex(index + 1);
+          }
+        } else {
+          setMessage("That's not the answer I'm expecting ❤️ Try again!");
+        }
+      };
+
+      if (completed) {
+        return (
+          <div className="card">
+            <h2>You finished all 10 questions 🎉</h2>
+            <p>Sai is probably smiling right now 😊</p>
+          </div>
+        );
+      }
+
+      const current = questions[index];
+      const options = current.options || ["yes", "no"];
+
+      return (
+        <div className="card">
+          <h2>Sai’s 10 Questions</h2>
+
+          <p>{current.text}</p>
+
+          {options.map(opt => (
+            <button key={opt} onClick={() => handleAnswer(opt)}>
+              {opt.charAt(0).toUpperCase() + opt.slice(1)}
+            </button>
+          ))}
+
+          {message && <div className="message">{message}</div>}
+
+          <p style={{ marginTop: "20px", opacity: 0.7 }}>
+            Progress: {index + 1} / {questions.length}
+          </p>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+
+</body>
+</html>
