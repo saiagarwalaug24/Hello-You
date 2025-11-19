@@ -126,17 +126,7 @@
       const card = document.getElementById('card');
       card.innerHTML = `
         <div class="final">
-          <h2>You completed the questions 🎉</h2>
-          <p class="small">Thank you for answering. When you scroll to the top, a message will appear.</p>
-          <div style="margin-top:12px">
-            <button class="btn primary" onclick="window.scrollTo({top:0, behavior:'smooth'})">REVEAL</button>
-          </div>
-          <div style="margin-top:14px; text-align:left">
-            <strong>Your answers:</strong>
-            <ul style="margin-top:8px; padding-left:18px">
-              ${history.map((h,i)=>`<li><strong>Q${i+1}:</strong> ${h.q} — <em>${h.a}</em></li>`).join('')}
-            </ul>
-          </div>
+          <p style="font-size:16px;">So, being a tech girlie i want to tell you that I am glad to have you as a part of my life.</p>
         </div>
       `;
     }
@@ -150,7 +140,7 @@
       }
     });
 
-
+    renderQuestion();
   </script>
 </body>
 </html>
